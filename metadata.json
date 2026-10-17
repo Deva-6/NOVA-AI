@@ -1,0 +1,10 @@
+{
+  "name": "NOVA+ — Voice-First AI Assistant (Alexa Edition)",
+  "description": "Simulated Alexa+ voice-first personal assistant with iconic Alexa light ring, task management, reminders, and activity history.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
