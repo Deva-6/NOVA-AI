@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -156,15 +157,15 @@ const planTheDayDeclaration: FunctionDeclaration = {
   },
 };
 
-// System instruction for AURA AI assistant in Alexa theme
-const getSystemInstruction = (userName: string = 'Alex') => `You are Alexa+, an ultra-responsive, voice-first intelligent personal assistant inspired by Amazon Alexa smart displays and Echo devices.
+// System instruction for NOVA+ assistant
+const getSystemInstruction = (userName: string = 'Alex') => `You are NOVA+, an ultra-responsive, voice-first intelligent AI personal assistant.
 You speak clearly, concisely, warmly, and naturally, suitable for voice output.
 The user's name is ${userName}. When appropriate and natural, address the user by name (e.g. "Sure, ${userName}...", "Done, ${userName}!").
 Keep responses conversational, concise (1-2 sentences max for spoken feedback), and directly actionable.
 When the user wants to add, list, complete, delete, or edit tasks, or set reminders, or plan their day, YOU MUST invoke the matching tool function call.
 If the user's request is a follow-up (e.g. "Move it to tomorrow", "Mark the first one complete", "Delete that"), use the provided conversation history and current task/reminder list context to resolve which item they are referring to.
 For destructive actions (like deleting all tasks), ask for confirmation if not specified.
-Always maintain the Alexa persona: calm, warm, capable, and succinct.`;
+Always maintain the NOVA+ persona: calm, warm, capable, and succinct.`;
 
 // API endpoint: Assistant conversation & tool execution
 app.post('/api/assistant', async (req, res) => {
@@ -229,7 +230,7 @@ ${message}
     });
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+      model: 'gemini-3.6-flash',
       contents,
       config: {
         systemInstruction: getSystemInstruction(userName),
@@ -251,7 +252,9 @@ ${message}
     // Check if Gemini invoked a function call
     const functionCalls = response.functionCalls;
     let actionExecuted: any = null;
-    let replyText = response.text || '';
+    let replyText = functionCalls?.length
+      ? ''
+      : (response.text || '');
 
     if (functionCalls && functionCalls.length > 0) {
       const call = functionCalls[0];
@@ -442,7 +445,7 @@ app.post('/api/tts', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    appName: 'AURA AI',
+    appName: 'NOVA+',
     geminiConfigured: Boolean(ai),
     serverTime: new Date().toISOString(),
   });
@@ -558,7 +561,7 @@ function generateDeterministicFallback(prompt: string, tasks: any[] = [], remind
 
   // Default conversational answer
   return {
-    replyText: `I'm listening. As AURA, I can help organize your tasks, set reminders, schedule your day, or answer your questions. Try saying "Plan my day" or "Add a task".`,
+    replyText: `I'm listening. As NOVA+, I can help organize your tasks, set reminders, schedule your day, or answer your questions. Try saying "Plan my day" or "Add a task".`,
     action: {
       type: 'general_answer',
       summary: 'Conversational response',
@@ -587,7 +590,7 @@ async function startServer() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`[AURA AI Server] running on http://0.0.0.0:${PORT} (mode: ${isProduction ? 'production' : 'development'})`);
+    console.log(`[NOVA+ Server] running on http://0.0.0.0:${PORT} (mode: ${isProduction ? 'production' : 'development'})`);
   });
 }
 
